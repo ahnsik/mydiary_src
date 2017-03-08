@@ -1,0 +1,85 @@
+<!doctype html>
+<html>
+<head>
+    <title>WYSIWYG Editor</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<body>
+<style>
+div.diary_area {
+  padding:5px;height:100%;width:80%;margin:10px auto;
+  background-color: #eee;
+}
+div.wEditor {
+    padding:5px;height:120px;width:95%;margin:10px auto;
+    overflow-y:scroll;border:1px solid #DBDBDB;
+    font:12px/1.5 NotoSans;
+}
+div.wEditor p {margin:0;padding:0;}
+span.red {
+  background-color: red;
+  color: red;
+}
+span.blue {
+  background-color: blue;
+  color: blue;
+}
+</style>
+
+<div class="diary_area">
+<h1> 나만의 온라인 일기장 </h1><h4>with MySQL web server. </h4>
+  <div id="editorExam1" class="wEditor" contenteditable="true">
+  </div>
+  <div style="width:500px;margin:0 auto;">
+      <button id="bold">두껍게</button>
+      <button id="italic">이탤릭</button>
+      <button id="underline">밑줄</button>
+      <button id="red"><span class='red'>__</span></button>
+      <button id="blue"><span class='blue'>__</span></button>
+      <button id="html">html 넣기</button>
+      <button id="print">출력 </button>
+  </div>
+</div>
+<script>
+
+(function() {
+    var  $ = new Function("a","return document.getElementById(a)");
+    var _editor = $("editorExam1");
+
+    // 버튼 클릭 이벤트 추가
+    $('bold').onclick = function() {
+        _editor.focus();
+        document.execCommand("Bold");
+    };
+    $('italic').onclick = function() {
+        _editor.focus();
+        document.execCommand("Italic");
+    };
+    $('underline').onclick = function() {
+        _editor.focus();
+        document.execCommand("Underline");
+    };
+    $('red').onclick = function() {
+        _editor.focus();
+        document.execCommand("foreColor", false,  "red");
+    };
+    $('blue').onclick = function() {
+        _editor.focus();
+        document.execCommand("foreColor", false,  "blue");
+    };
+    $('html').onclick = function() {
+        var html = prompt("html 태그 넣기", '<img src="http://main.nateimg.co.kr/img/cms/content_pool/2011/07/normal_bi.gif"/>');
+        _editor.focus();
+        if (document.all) {
+            var range = document.selection.createRange();
+            range.pasteHTML(html)
+        } else document.execCommand('insertHTML', false, html);
+    };
+    $('print').onclick = function() {
+        var html = _editor.innerHTML;
+        alert(html);
+    };
+})();
+</script>
+</body>
+</html>
