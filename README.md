@@ -1,1 +1,0 @@
-# mydiary_src

@@ -1,0 +1,42 @@
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+
+  <title>혈압기록</title>
+
+	<link rel="stylesheet" href="src/css/vanilla-calendar-min.css">
+	<script src="src/js/vanilla-calendar-min.js"></script>
+
+	<style type="text/css">
+  @media ( min-width: 1024px ) {
+		body {
+			background: #88C;
+		}
+	}
+	</style>
+
+</head>
+<body>
+  <div id="calendar">
+    <h1>Calendar</h1>
+		<div id="myCalendar" class="vanilla-calendar"></div>
+  </div>
+  <div id="diary_form">
+    <form method="post" action="new_diary">
+			<ul>
+				<li>  <textarea name="memo" rows="4" id="memo">오늘은..</textarea> </li>
+				<li>	<input type="submit" class="submit" name="action" value="기록저장" />
+				</li>
+			</ul>
+		</form>
+  </div>
+
+  <script>
+	let myCalendar = new VanillaCalendar({
+    selector: "#myCalendar"
+	})  </script>
+</body>
+
+</html>
