@@ -19,9 +19,14 @@ app.get('/', function(req, res) {
 
 app.get('/diary', function(req, res) {
   console.log('access to ' + '/diary/' );
-  var query_string = 'select * from mydiary;' ;
+  var query_string;
+  if (req.query.date) {   // parameter 에 date 가 있으면..
+    query_string = 'select * from mydiary where date="'+req.query.date+'";' ;
+  } else {
+    query_string = 'select * from mydiary;' ;
+  }
   console.log ( query_string );
-  // var data = fs.readFileSync('./new_form.ejs', 'utf8');
+
   db.query(query_string, function(err, result, fields) {
     if (err) throw err;
     console.log(result);
@@ -32,7 +37,7 @@ app.get('/diary', function(req, res) {
 app.post('/new_diary', function(req, res) {
   console.log('access to ' + '/new_diary' );
   console.log ( req.body );
-  var query_string = 'insert into mydiary(memo) values ("'+ req.body.memo +'");' ;
+  var query_string = 'insert into mydiary(date,memo) values ("'+new Date().toLocaleString() + '","'+ req.body.memo +'");';
   console.log ( query_string );
   db.query(query_string);
   // var data = fs.readFileSync('./new_form.html', 'utf8');

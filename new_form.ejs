@@ -17,14 +17,24 @@
 	}
 	</style>
 
+	<script>
+	Date.prototype.yyyymmdd = function() 	{
+	    var yyyy = this.getFullYear().toString();
+	    var mm = (this.getMonth() + 1).toString();
+	    var dd = this.getDate().toString();
+	    return yyyy + (mm[1] ? mm : '0'+mm[0]) + (dd[1] ? dd : '0'+dd[0]);
+	}
+	</script>
+
 </head>
+
 <body>
   <div id="calendar">
     <h1>Calendar</h1>
 		<div id="myCalendar" class="vanilla-calendar">
       <ul>
         <% for (var i=0; i< db.length; i++) { %>
-          <li> date: <%=db[i].date%>, memo: <%=db[i].memo%>
+          <li> <a href="./diary?date=<%=db[i].date.toLocaleString()%>"> date: <%=db[i].date.toLocaleString()%>, memo: <%=db[i].memo%> ::: <%=db[i].date.getTime()%> </a>
           </li>
         <% } %>
       </ul>
@@ -43,7 +53,8 @@
   <script>
 	let myCalendar = new VanillaCalendar({
     selector: "#myCalendar"
-	})  </script>
+	})
+	</script>
 </body>
 
 </html>
