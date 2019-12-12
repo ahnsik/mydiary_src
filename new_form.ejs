@@ -1,15 +1,107 @@
+<!DOCTYPE html>
 <html>
-
 <head>
-	<meta charset="UTF-8">
+	<meta charset="UTF-8" lang="ko">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
 
-  <title>혈압기록</title>
-
-	<link rel="stylesheet" href="src/css/vanilla-calendar-min.css">
-	<script src="src/js/vanilla-calendar-min.js"></script>
+	<title>My Diary - mini Diary on web</title>
 
 	<style type="text/css">
+	* {
+		margin: 0;
+		padding: 0;
+	}
+	body {
+		font: 18px Arial, sans-serif;
+		width: 100%;
+	}
+	ul {
+   list-style-type: none;
+  }
+	.wrapper {
+		margin: 40px;
+		padding: 40px;
+		/* border: 1px solid red; */
+		width: 960px;
+		height: 500px;
+	}
+	.history {
+		/* border: 1px solid blue; */
+		position: relative;
+		float: left;
+		width: 400px;
+		height: 500px;
+	}
+	.history #keyword {
+		margin: 0;
+		padding: 0;
+		width: 300px;
+		height: 40px;
+		font-size: 18px;
+	}
+	.history #search {
+		margin: 0;
+		padding: 0;
+		width: 40px;
+		height: 40px;
+		font-size: 18px;
+	}
+	.list_view {
+		margin-top: 20px;
+		/* border: 1px solid blue; */
+		position: relative;
+		float: left;
+		overflow: auto;
+		width: 360px;
+		height: 400px;
+		font-size: 18px;
+		display: none;
+	}
+	.calendar_view {
+		margin-top: 20px;
+		/* border: 1px solid blue; */
+		position: relative;
+		float: left;
+		overflow: auto;
+		width: 360px;
+		font-size: 18px;
+		/* display: none; */
+	}
+	.week_sun, .week_mon, .week_tue, .week_wed, .week_thu, .week_fri, .week_sat {
+		padding-top: 10px;
+		padding-bottom: 10px;
+		/* border: 1px solid yellow; */
+		width: 44px;
+		text-align: center;
+		display: inline-block;
+		color: black;
+	}
+	.week_sun {
+		color: red;
+	}
+	.week_sat {
+		color: blue;
+	}
+	.editor_view {
+		/* border: 1px solid green; */
+		height: 500px;
+		width: auto;
+	}
+	#memo {
+		width: 550px;
+		height: 420px;
+		background: #7FFEFEFE;
+	}
+	#writen_date {
+		padding: 10px;
+		/* border: 1px solid purple; */
+		width: auto;
+		font-size: 24px;
+	}
+	.submit, .button {
+		width: auto;
+		font-size: 24px;
+	}
   @media ( min-width: 1024px ) {
 		body {
 			background: #88C;
@@ -17,21 +109,16 @@
 	}
 	</style>
 
-	<script>
-	Date.prototype.yyyymmdd = function() 	{
-	    var yyyy = this.getFullYear().toString();
-	    var mm = (this.getMonth() + 1).toString();
-	    var dd = this.getDate().toString();
-	    return yyyy + (mm[1] ? mm : '0'+mm[0]) + (dd[1] ? dd : '0'+dd[0]);
-	}
-	</script>
-
 </head>
 
 <body>
-  <div id="calendar">
-    <h1>Calendar</h1>
-		<div id="myCalendar" class="vanilla-calendar">
+
+	<div class="wrapper">
+
+	<div class="history">
+		<input type="text" id="keyword" placeholder="검색.."/>
+		<input type="button" id="search" value="->" class="button"/>
+		<div id="myList" class="list_view">
       <ul>
         <% for (var i=0; i< db.length; i++) { %>
           <li> <a href="./diary?date=<%=db[i].date.toLocaleString()%>"> date: <%=db[i].date.toLocaleString()%>, memo: <%=db[i].memo%> ::: <%=db[i].date.getTime()%> </a>
@@ -39,9 +126,72 @@
         <% } %>
       </ul>
     </div>
-  </div>
-  <div id="diary_form">
+		<div id="myCalendar" class="calendar_view">
+			<a href="prev">prev</a>
+			<span id="year">2020.</span><span id="month">01</span>
+			<a href="next">next</a>
+			<div class="week_title">
+				<span class='week_sun'>일</span>
+				<span class='week_mon'>월</span>
+				<span class='week_tue'>화</span>
+				<span class='week_wed'>수</span>
+				<span class='week_thu'>목</span>
+				<span class='week_fri'>금</span>
+				<span class='week_sat'>토</span>
+			</div>
+			<div class="week">
+				<span class='week_sun'>.</span>
+				<span class='week_mon'>.</span>
+				<span class='week_tue'>.</span>
+				<span class='week_wed'>1</span>
+				<span class='week_thu'>2</span>
+				<span class='week_fri'>3</span>
+				<span class='week_sat'>4</span>
+			</div>
+			<div class="week">
+				<span class='week_sun'>5</span>
+				<span class='week_mon'>6</span>
+				<span class='week_tue'>7</span>
+				<span class='week_wed'>8</span>
+				<span class='week_thu'>9</span>
+				<span class='week_fri'>10</span>
+				<span class='week_sat'>11</span>
+			</div>
+			<div class="week">
+				<span class='week_sun'>12</span>
+				<span class='week_mon'>13</span>
+				<span class='week_tue'>14</span>
+				<span class='week_wed'>15</span>
+				<span class='week_thu'>16</span>
+				<span class='week_fri'>17</span>
+				<span class='week_sat'>18</span>
+			</div>
+			<div class="week">
+				<span class='week_sun'>19</span>
+				<span class='week_mon'>20</span>
+				<span class='week_tue'>21</span>
+				<span class='week_wed'>22</span>
+				<span class='week_thu'>23</span>
+				<span class='week_fri'>24</span>
+				<span class='week_sat'>25</span>
+			</div>
+			<div class="week">
+				<span class='week_sun'>26</span>
+				<span class='week_mon'>27</span>
+				<span class='week_tue'>28</span>
+				<span class='week_wed'>29</span>
+				<span class='week_thu'>30</span>
+				<span class='week_fri'>31</span>
+				<span class='week_sat'>.</span>
+			</div>
+		</div>
+		<input type="button" id="goto_list" value="목록으로 보기" class="button"/>
+		<input type="button" id="goto_calendar" value="달력으로 보기" class="button"/>
+	</div>
+
+  <div id="diary_form" class="editor_view">
     <form method="post" action="new_diary">
+			<p id="writen_date">2020.01.04</p>
 			<ul>
 				<li>  <textarea name="memo" rows="4" id="memo">오늘은..</textarea> </li>
 				<li>	<input type="submit" class="submit" name="action" value="기록저장" />
@@ -50,11 +200,8 @@
 		</form>
   </div>
 
-  <script>
-	let myCalendar = new VanillaCalendar({
-    selector: "#myCalendar"
-	})
-	</script>
+	</div>
+
 </body>
 
 </html>

@@ -20,16 +20,19 @@ app.get('/', function(req, res) {
 app.get('/diary', function(req, res) {
   console.log('access to ' + '/diary/' );
   var query_string;
+  var date_string;
   if (req.query.date) {   // parameter 에 date 가 있으면..
     query_string = 'select * from mydiary where date="'+req.query.date+'";' ;
+    date_string = req.query.date;
   } else {
     query_string = 'select * from mydiary;' ;
+    date_string = null;
   }
   console.log ( query_string );
 
   db.query(query_string, function(err, result, fields) {
     if (err) throw err;
-    console.log(result);
+    // console.log(result);
     res.render('./new_form.ejs', { db:result });
   });
 });
@@ -49,7 +52,6 @@ app.post('/new_diary', function(req, res) {
 // mysql> update mydiary set memo="Dummy" where date="20191209120000" ;   // timestamp로 지정해서, 수정한 시각에 따라 실제 timestamp 값이 바뀌고 있음. 또한 key로 못찾는 경우엔 아무것도 안함.
 // mysql> select * from mydiary;
 // mysql> delete from mydiary where date=20191209122643;
-
 
 var port_num = 3000;
 app.listen(port_num, function() {
