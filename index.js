@@ -23,9 +23,11 @@ app.get('/diary', function(req, res) {
   var date_string;
   var date;
   if (req.query.date) {   // parameter 에 date 가 있으면..
-    query_string = 'select * from mydiary where date="'+req.query.date+'";' ;
     date_string = req.query.date;
     date = new Date(date_string);
+    let start_date = new Date(date.getFullYear(),date.getMonth(), 1 );
+    let end_date = new Date(date.getFullYear(),date.getMonth()+1, 0);
+    query_string = 'select * from mydiary where date between date("' + start_date.toLocaleDateString() + '") and date("' + end_date.toLocaleDateString() + '");' ;
   } else if (req.query.search) {    // parameter 에 search 가 있으면.. 키워드에 해당하는 목록만 표시함.
     date = new Date();
     date_string = null;

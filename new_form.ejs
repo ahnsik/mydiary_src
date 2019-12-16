@@ -58,7 +58,6 @@
 		float: left;
 		overflow: auto;
 		width: 360px;
-		height: 400px;
 		font-size: 18px;
 		/* display: none; */
 	}
@@ -154,12 +153,14 @@
 						<% } %>
           </li>
         <% } %>
+				<% var prevM = new Date(curr); prevM.setMonth(prevM.getMonth()-1); %>
+				<% var nextM = new Date(curr); nextM.setMonth(nextM.getMonth()+1); %>
       </ul>
     </div>
 		<div id="myCalendar" class="calendar_view">
-			<a href="prev" onclick="prev_month()">prev</a>
+			<a href="./diary?date=<%=prevM.toLocaleString()%>">prev</a>
 			<span id="year"><%=curr.getFullYear()%></span>.<span id="month"><%=curr.getMonth()+1%></span>
-			<a href="next" onclick="next_month()">next</a>
+			<a href="./diary?date=<%=nextM.toLocaleString()%>">next</a>
 
 			<div class="week_title">
 				<span class='week_sun'>일</span>
@@ -170,6 +171,7 @@
 				<span class='week_fri'>금</span>
 				<span class='week_sat'>토</span>
 			</div>
+
 			<div class="week">
 				<span class='week_sun'>.</span>
 				<span class='week_mon'>.</span>
