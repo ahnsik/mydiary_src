@@ -63,11 +63,14 @@
 		/* display: none; */
 	}
 	.today {
-		font-size: 36px;
+		font-weight: bold;
+		font-style: italic;
 	}
 	.written_list {
-		text-overflow: ellipsis;
-		border: 1px solid orange;
+		text-overflow:ellipsis;
+		overflow:hidden;
+		white-space:nowrap;
+		/* border: 1px solid orange; */
 	}
 	.calendar_view {
 		margin-top: 20px;
@@ -141,7 +144,7 @@
       <ul>
         <% for (var i=0; i< db.length; i++) { %>
           <li class="written_list">
-						<% if (db[i].date.toLocaleString() == curr.toLocaleString()) { %>
+						<% if (db[i].date.toLocaleDateString() == curr.toLocaleDateString()) { %>
 							<span class='today'>
 							<% var today_memo = db[i].memo%>
 						<% } %>
