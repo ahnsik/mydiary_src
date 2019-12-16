@@ -4,6 +4,9 @@
 	<meta charset="UTF-8" lang="ko">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
 
+	<link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Noto+Serif+KR&display=swap&subset=korean" rel="stylesheet">
+
 	<title>My Diary - mini Diary on web</title>
 
 	<style type="text/css">
@@ -12,6 +15,7 @@
 		padding: 0;
 	}
 	body {
+		font-family: 'Roboto', sans-serif;
 		font: 18px Arial, sans-serif;
 		width: 100%;
 	}
@@ -38,6 +42,7 @@
 		width: 300px;
 		height: 40px;
 		font-size: 18px;
+		font-family: inherit;
 	}
 	.history #search {
 		margin: 0;
@@ -55,7 +60,14 @@
 		width: 360px;
 		height: 400px;
 		font-size: 18px;
-		display: none;
+		/* display: none; */
+	}
+	.today {
+		font-size: 36px;
+	}
+	.written_list {
+		text-overflow: ellipsis;
+		border: 1px solid orange;
 	}
 	.calendar_view {
 		margin-top: 20px;
@@ -91,6 +103,8 @@
 		width: 550px;
 		height: 420px;
 		background: #7FFEFEFE;
+		font-size: 20px;
+		font-family: 'Noto Serif KR', serif;
 	}
 	#writen_date {
 		padding: 10px;
@@ -117,19 +131,33 @@
 
 	<div class="history">
 		<input type="text" id="keyword" placeholder="검색.."/>
-		<input type="button" id="search" value="->" class="button"/>
+						<!-- https://ra2kstar.tistory.com/51 -->
+						<!-- 특정 문자열을 포함하는 데이터를 검색하는 방법은, 아래와 같은 query 문을 사용한다.
+									SELECT * FROM 테이블명 WHERE memo LIKE '%문자열%';
+						-->
+		<!-- <input type="button" id="search" value="->" class="button"/> -->
+		<a href="./diary?search=PC%>">[ -> ]</a>
 		<div id="myList" class="list_view">
       <ul>
         <% for (var i=0; i< db.length; i++) { %>
-          <li> <a href="./diary?date=<%=db[i].date.toLocaleString()%>"> date: <%=db[i].date.toLocaleString()%>, memo: <%=db[i].memo%> ::: <%=db[i].date.getTime()%> </a>
+          <li class="written_list">
+						<% if (db[i].date.toLocaleString() == curr.toLocaleString()) { %>
+							<span class='today'>
+							<% var today_memo = db[i].memo%>
+						<% } %>
+					  <a href="./diary?date=<%=db[i].date.toLocaleString()%>" ><%=db[i].date.toLocaleString()%>: <%=db[i].memo%> </a>
+						<% if (db[i].date.toLocaleString() == curr.toLocaleString()) { %>
+							</span>
+						<% } %>
           </li>
         <% } %>
       </ul>
     </div>
 		<div id="myCalendar" class="calendar_view">
-			<a href="prev">prev</a>
-			<span id="year">2020.</span><span id="month">01</span>
-			<a href="next">next</a>
+			<a href="prev" onclick="prev_month()">prev</a>
+			<span id="year"><%=curr.getFullYear()%></span>.<span id="month"><%=curr.getMonth()+1%></span>
+			<a href="next" onclick="next_month()">next</a>
+
 			<div class="week_title">
 				<span class='week_sun'>일</span>
 				<span class='week_mon'>월</span>
@@ -190,10 +218,10 @@
 	</div>
 
   <div id="diary_form" class="editor_view">
-    <form method="post" action="new_diary">
-			<p id="writen_date">2020.01.04</p>
+    <form method="post" action="new_diary?date=<%=curr.toLocaleString()%>">
+			<p id="writen_date"><%=curr.toLocaleString()%></p>
 			<ul>
-				<li>  <textarea name="memo" rows="4" id="memo">오늘은..</textarea> </li>
+				<li>  <textarea name="memo" rows="4" id="memo"><%=(today_memo==null)?"오늘은..":today_memo%></textarea> </li>
 				<li>	<input type="submit" class="submit" name="action" value="기록저장" />
 				</li>
 			</ul>
@@ -201,6 +229,21 @@
   </div>
 
 	</div>
+
+<script>
+	var show_date = function() {
+		var title_date = document.getElementById('year');
+		title_date.text = "<%=curr.toLocaleString()%>";
+		console.log('Display <%=curr.toLocaleString()%> record.');
+	}
+	var prev_month = function() {
+		console.log('go to previous month.');
+	}
+  var prev_month = function() {
+		console.log('go to next month.');
+	}
+</script>
+
 
 </body>
 

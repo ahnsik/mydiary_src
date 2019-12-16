@@ -21,30 +21,44 @@ app.get('/diary', function(req, res) {
   console.log('access to ' + '/diary/' );
   var query_string;
   var date_string;
+  var date;
   if (req.query.date) {   // parameter 에 date 가 있으면..
     query_string = 'select * from mydiary where date="'+req.query.date+'";' ;
     date_string = req.query.date;
-  } else {
-    query_string = 'select * from mydiary;' ;
+    date = new Date(date_string);
+  } else if (req.query.search) {    // parameter 에 search 가 있으면.. 키워드에 해당하는 목록만 표시함.
+    date = new Date();
     date_string = null;
+    query_string = 'select * from mydiary where memo like "%'+req.query.search+'%";' ;
+  } else {    // parameter 가 없으면, 현재 시각을 기준으로 현재의 달 (1일부터 1달간)의 데이터만 가져와서 표시.
+    date = new Date();
+    let start_date = new Date(date.getFullYear(),date.getMonth(), 1 );
+    let end_date = new Date(date.getFullYear(),date.getMonth()+1, 0);
+    date_string = null;
+    // 범위를 지정해서 해당하는 '월' 의 데이터만 가져 온다.
+    query_string = 'select * from mydiary where date between date("' + start_date.toLocaleDateString() + '") and date("' + end_date.toLocaleDateString() + '");' ;
   }
   console.log ( query_string );
 
   db.query(query_string, function(err, result, fields) {
     if (err) throw err;
     // console.log(result);
-    res.render('./new_form.ejs', { db:result });
+    res.render('./new_form.ejs', { db:result, curr:date });
   });
 });
 
 app.post('/new_diary', function(req, res) {
   console.log('access to ' + '/new_diary' );
   console.log ( req.body );
-  var query_string = 'insert into mydiary(date,memo) values ("'+new Date().toLocaleString() + '","'+ req.body.memo +'");';
+  if (req.query.date) {   // parameter 에 date 가 있으면..
+    // var query_string = 'insert into mydiary(date,memo) values ("'+req.query.date + '","'+ req.body.memo +'");';
+    var query_string = 'update mydiary set memo="' + req.body.memo + '", date="'+ req.query.date + '" where date="' + req.query.date + '";';
+  } else {
+    var query_string = 'insert into mydiary(date,memo) values ("'+new Date().toLocaleString() + '","'+ req.body.memo +'");';
+  }
+
   console.log ( query_string );
   db.query(query_string);
-  // var data = fs.readFileSync('./new_form.html', 'utf8');
-  // res.send(data);
   res.redirect('/diary');
 });
 
