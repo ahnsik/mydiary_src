@@ -132,31 +132,16 @@
 	<div class="wrapper">
 
 	<div class="history">
-		<input type="text" id="keyword" placeholder="검색.."/>
+		<input type="text" id="keyword" placeholder="검색.." onKeypress="javascript:if(event.keyCode==13) { keyword_search(); }" />   <!-- 출처: https://hsol.tistory.com/550 [한솔닷컴] -->
 						<!-- https://ra2kstar.tistory.com/51 -->
 						<!-- 특정 문자열을 포함하는 데이터를 검색하는 방법은, 아래와 같은 query 문을 사용한다.
 									SELECT * FROM 테이블명 WHERE memo LIKE '%문자열%';
 						-->
-		<!-- <input type="button" id="search" value="->" class="button"/> -->
-		<a href="./diary?search=PC%>">[ -> ]</a>
-		<div id="myList" class="list_view">
-      <ul>
-        <% for (var i=0; i< db.length; i++) { %>
-          <li class="written_list">
-						<% if (db[i].date.toLocaleDateString() == curr.toLocaleDateString()) { %>
-							<span class='today'>
-							<% var today_memo = db[i].memo%>
-						<% } %>
-					  <a href="./diary?date=<%=db[i].date.toLocaleString()%>" ><%=db[i].date.toLocaleString()%>: <%=db[i].memo%> </a>
-						<% if (db[i].date.toLocaleString() == curr.toLocaleString()) { %>
-							</span>
-						<% } %>
-          </li>
-        <% } %>
-				<% var prevM = new Date(curr); prevM.setMonth(prevM.getMonth()-1); %>
-				<% var nextM = new Date(curr); nextM.setMonth(nextM.getMonth()+1); %>
-      </ul>
-    </div>
+		<input type="button" id="search" value="->" class="button" onclick="keyword_search()"/>
+		<!-- <a href="./diary?search=PC%>">[ -> ]</a> -->
+		<% var prevM = new Date(curr); prevM.setMonth(prevM.getMonth()-1); %>
+		<% var nextM = new Date(curr); nextM.setMonth(nextM.getMonth()+1); %>
+
 		<div id="myCalendar" class="calendar_view">
 			<a href="./diary?date=<%=prevM.toLocaleString()%>">prev</a>
 			<span id="year"><%=curr.getFullYear()%></span>.<span id="month"><%=curr.getMonth()+1%></span>
@@ -172,54 +157,26 @@
 				<span class='week_sat'>토</span>
 			</div>
 
-			<div class="week">
-				<span class='week_sun'>.</span>
-				<span class='week_mon'>.</span>
-				<span class='week_tue'>.</span>
-				<span class='week_wed'>1</span>
-				<span class='week_thu'>2</span>
-				<span class='week_fri'>3</span>
-				<span class='week_sat'>4</span>
-			</div>
-			<div class="week">
-				<span class='week_sun'>5</span>
-				<span class='week_mon'>6</span>
-				<span class='week_tue'>7</span>
-				<span class='week_wed'>8</span>
-				<span class='week_thu'>9</span>
-				<span class='week_fri'>10</span>
-				<span class='week_sat'>11</span>
-			</div>
-			<div class="week">
-				<span class='week_sun'>12</span>
-				<span class='week_mon'>13</span>
-				<span class='week_tue'>14</span>
-				<span class='week_wed'>15</span>
-				<span class='week_thu'>16</span>
-				<span class='week_fri'>17</span>
-				<span class='week_sat'>18</span>
-			</div>
-			<div class="week">
-				<span class='week_sun'>19</span>
-				<span class='week_mon'>20</span>
-				<span class='week_tue'>21</span>
-				<span class='week_wed'>22</span>
-				<span class='week_thu'>23</span>
-				<span class='week_fri'>24</span>
-				<span class='week_sat'>25</span>
-			</div>
-			<div class="week">
-				<span class='week_sun'>26</span>
-				<span class='week_mon'>27</span>
-				<span class='week_tue'>28</span>
-				<span class='week_wed'>29</span>
-				<span class='week_thu'>30</span>
-				<span class='week_fri'>31</span>
-				<span class='week_sat'>.</span>
-			</div>
 		</div>
-		<input type="button" id="goto_list" value="목록으로 보기" class="button"/>
-		<input type="button" id="goto_calendar" value="달력으로 보기" class="button"/>
+		<div id="myList" class="list_view">
+      <ul>
+        <% for (var i=0; i< db.length; i++) { %>
+          <li class="written_list">
+						<% if (db[i].date.toLocaleDateString() == curr.toLocaleDateString()) { %>
+							<span class='today'>
+							<% var today_memo = db[i].memo%>
+						<% } %>
+					  <a href="./diary?date=<%=db[i].date.toLocaleString()%>" ><%=db[i].date.toLocaleString()%>: <%=db[i].memo%> </a>
+						<% if (db[i].date.toLocaleString() == curr.toLocaleString()) { %>
+							</span>
+						<% } %>
+          </li>
+        <% } %>
+      </ul>
+    </div>
+
+		<!-- <input type="button" id="goto_list" value="목록으로 보기" class="button"/>
+		<input type="button" id="goto_calendar" value="달력으로 보기" class="button"/> -->
 	</div>
 
   <div id="diary_form" class="editor_view">
@@ -235,19 +192,40 @@
 
 	</div>
 
-<script>
-	var show_date = function() {
-		var title_date = document.getElementById('year');
-		title_date.text = "<%=curr.toLocaleString()%>";
-		console.log('Display <%=curr.toLocaleString()%> record.');
-	}
-	var prev_month = function() {
-		console.log('go to previous month.');
-	}
-  var prev_month = function() {
-		console.log('go to next month.');
-	}
-</script>
+	<script>
+		var week_class_string = [
+			'week_sun','week_mon','week_tue','week_wed','week_thu','week_fri','week_sat'
+		];
+	  window.onload = function() {
+			var start_date = new Date(<%=curr.getFullYear()%>, <%=curr.getMonth()%>, 1);
+			var start_day = start_date.getDay();
+			for (var i=0; i<6; i++) {
+				var a_week_html = "<div class='week'>";
+				for (var j=0; j<7; j++) {
+					if (start_day > 0) {
+						start_day--;
+						a_week_html += "<span class='" + week_class_string[j] + "'>" + "." + "</span>";
+					} else if ( start_date.getMonth() != <%=curr.getMonth()%>) {
+						a_week_html += "<span class='" + week_class_string[j] + "'>" + "." + "</span>";
+					} else {
+						a_week_html += "<span class='" + week_class_string[j] + "'>" + start_date.getDate() + "</span>";
+						start_date.setDate(start_date.getDate()+1);
+					}
+				}
+				a_week_html += "</div>";
+				document.getElementById("myCalendar").innerHTML += a_week_html;
+			}
+			// alert( document.getElementById("myCalendar").html  );
+	  }
+		var keyword_search = function () {
+			var searching_keyword = document.getElementById("keyword").value;
+			if ( searching_keyword==undefined ) {	// 키워드 검색어가 없으면 current 시간으로.
+				location.href = "./diary?date=" + <%=curr.toLocaleDateString()%>;
+			} else {
+				location.href = "./diary?search=" + searching_keyword;
+			}
+		}
+	</script>
 
 
 </body>
