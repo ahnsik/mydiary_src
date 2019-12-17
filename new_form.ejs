@@ -65,6 +65,9 @@
 		font-weight: bold;
 		font-style: italic;
 	}
+	.recorded {
+		background: #C64;
+	}
 	.written_list {
 		text-overflow:ellipsis;
 		overflow:hidden;
@@ -196,9 +199,21 @@
 		var week_class_string = [
 			'week_sun','week_mon','week_tue','week_wed','week_thu','week_fri','week_sat'
 		];
+		var has_data = [
+			<%  for (var i=0; i< db.length; i++) { %>
+						<%=db[i].date.getDate()%>
+			<%		if ( i < (db.length-1) )	{ %>
+						,
+			<%		}
+					}
+			%>
+		];
 	  window.onload = function() {
 			var start_date = new Date(<%=curr.getFullYear()%>, <%=curr.getMonth()%>, 1);
 			var start_day = start_date.getDay();
+			var recorded = false;		// class='recorded' 를 추가할 지 말지
+			var index = 0;					// has_data 의 배열을 검색하기 위한 인덱스
+
 			for (var i=0; i<6; i++) {
 				var a_week_html = "<div class='week'>";
 				for (var j=0; j<7; j++) {
@@ -208,14 +223,28 @@
 					} else if ( start_date.getMonth() != <%=curr.getMonth()%>) {
 						a_week_html += "<span class='" + week_class_string[j] + "'>" + "." + "</span>";
 					} else {
-						a_week_html += "<span class='" + week_class_string[j] + "'>" + start_date.getDate() + "</span>";
+						recorded = (start_date.getDate()==has_data[index]) ? true : false;
+						while( (index < has_data.length) && (start_date.getDate() >= has_data[index]) ) {
+							index++;
+						}
+
+						// a_week_html += "<span class='" + week_class_string[j] + (recorded?" recorded'>":"'>") + start_date.getDate() + "</span>";
+							// 두개의 class 를 등록할 때엔, space 를 넣고 함께 지정함.  따로 따로 class='wee_end' class='recorded' 와 같이 하면, 앞에 것 하나만 적용 됨.
+						if (recorded) {		//
+							a_week_html += "<a href='./diary?date=" + start_date.toLocaleDateString() + "'>"
+									+ "<span class='" + week_class_string[j] + " recorded'>" + start_date.getDate() + "</span>"
+									+ "</a>";
+						} else {
+							a_week_html += "<span class='" + week_class_string[j] + "'>" + start_date.getDate() + "</span>";
+						}
+
+
 						start_date.setDate(start_date.getDate()+1);
 					}
 				}
 				a_week_html += "</div>";
 				document.getElementById("myCalendar").innerHTML += a_week_html;
 			}
-			// alert( document.getElementById("myCalendar").html  );
 	  }
 		var keyword_search = function () {
 			var searching_keyword = document.getElementById("keyword").value;
@@ -226,7 +255,6 @@
 			}
 		}
 	</script>
-
 
 </body>
 
