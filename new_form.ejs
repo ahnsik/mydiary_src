@@ -163,11 +163,20 @@
 		</div>
 		<div id="myList" class="list_view">
       <ul>
+				<% var today_memo = null;
+					 var memo_timestamp = new Date();%>
         <% for (var i=0; i< db.length; i++) { %>
           <li class="written_list">
 						<% if (db[i].date.toLocaleDateString() == curr.toLocaleDateString()) { %>
+										<!-- 지정한 날짜의 항목은 구분해서 표시하도록 -->
 							<span class='today'>
-							<% var today_memo = db[i].memo%>
+							<% if (today_memo == null) {
+									today_memo = db[i].memo; memo_timestamp = db[i].date;
+							   } %>
+						<% } %>
+						<% if (db[i].date.toLocaleString() == curr.toLocaleString()) { %>
+										<!-- 메모에 표시할 내용은 시간까지 비교해야 하므로 따로 비교처리. -->
+							<% today_memo = db[i].memo; memo_timestamp = db[i].date %>
 						<% } %>
 					  <a href="./diary?date=<%=db[i].date.toLocaleString()%>" ><%=db[i].date.toLocaleString()%>: <%=db[i].memo%> </a>
 						<% if (db[i].date.toLocaleString() == curr.toLocaleString()) { %>
@@ -184,7 +193,7 @@
 
   <div id="diary_form" class="editor_view">
     <form method="post" action="new_diary?date=<%=curr.toLocaleString()%>">
-			<p id="writen_date"><%=curr.toLocaleString()%></p>
+			<p id="writen_date"><%=memo_timestamp.toLocaleString()%></p>
 			<ul>
 				<li>  <textarea name="memo" rows="4" id="memo"><%=(today_memo==null)?"오늘은..":today_memo%></textarea> </li>
 				<li>	<input type="submit" class="submit" name="action" value="기록저장" />
